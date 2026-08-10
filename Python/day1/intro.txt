@@ -1,0 +1,85 @@
+﻿PS C:\SkillStorm-Project-Repos\20260810-Guidehouse-Agentcore\Python> python
+Python 3.14.6 (tags/v3.14.6:c63aec6, Jun 10 2026, 10:26:10) [MSC v.1944 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+Ctrl click to launch VS Code Native REPL
+>>> age = 26
+>>> price = 19.99
+>>> print(age, price)
+26 19.99
+>>> print(type(age), type(price))
+<class 'int'> <class 'float'>
+>>> age = 26.75
+>>> print(type(age), type(price))
+<class 'float'> <class 'float'>
+>>> print(0.1 + 0.2)
+0.30000000000000004
+>>> print((0.1 + 0.2) == 0.3)
+False
+>>> name = "Austin Reeves"
+>>> print(name)
+Austin Reeves
+>>> greeting = f"{name} is {age} years old."
+>>> print(greeting)
+Austin Reeves is 26.75 years old.
+>>> print(name.upper(), name.title(), len(name))
+AUSTIN REEVES Austin Reeves 13
+>>> print(greeting.replace(" ", "-"))
+Austin-Reeves-is-26.75-years-old.
+>>> is_open = True
+>>> is_closed = False
+>>> print(type(is_open))
+<class 'bool'>
+>>> category = None
+>>> print(category == None)
+True
+>>> print(name == True)    
+False
+>>> print(category is None)
+True
+>>> tags = ["urgent", "billing", "finance"]
+>>> tags.append("mfa")
+>>> print(tags)
+['urgent', 'billing', 'finance', 'mfa']
+>>> tickets = {"id": "TK-001", "priority", "high"}
+  File "<stdin>", line 1
+    tickets = {"id": "TK-001", "priority", "high"}
+                                        ^
+SyntaxError: ':' expected after dictionary key
+>>> tickets = {"id": "TK-001", "priority": "high"}
+>>> tickets["priority"]                           
+'high'
+>>> tickets.get("id")  
+'TK-001'
+>>> tickets.get("category")
+>>> tickets["category"]    
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+    tickets["category"]
+    ~~~~~~~^^^^^^^^^^^^
+KeyError: 'category'
+>>> point = (10, 20)
+>>> print(point)
+(10, 20)
+>>> point.append(30)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+    point.append(30)
+    ^^^^^^^^^^^^
+AttributeError: 'tuple' object has no attribute 'append'
+>>> print(type(tags), type(tickets), type(point))
+<class 'list'> <class 'dict'> <class 'tuple'>
+>>> print(bool([]))
+False
+>>> print(bool(0)) 
+False
+>>> print(bool(""))
+False
+>>> print(bool(None))
+False
+>>> print(bool([1])) 
+True
+>>> print(bool(" "))
+True
+>>> print(bool(-12435.2345))
+True
+>>> exit()
