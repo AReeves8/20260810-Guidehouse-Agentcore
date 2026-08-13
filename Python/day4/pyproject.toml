@@ -1,0 +1,17 @@
+[project]
+name = "support_api"
+version = "0.1.0"
+description = "Support-ticket toolkit with filtering options"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "faker>=25.0"
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["support_api*"]

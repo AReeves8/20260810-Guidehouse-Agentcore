@@ -1,0 +1,11 @@
+[
+  {"id": "TKT-0001", "tenant": "acme-corp", "title": "Login fails after SSO redirect", "priority": "urgent", "status": "open", "category": "auth"},
+  {"id": "TKT-0002", "tenant": "acme-corp", "title": "Invoice PDF missing line items", "priority": "medium", "status": "open", "category": "billing"},
+  {"id": "TKT-0003", "tenant": "globex", "title": "Dashboard takes 30s to load", "priority": "high", "status": "ack", "category": "performance"},
+  {"id": "TKT-0004", "tenant": "globex", "title": "Export button does nothing on Safari", "priority": "low", "status": "open"},
+  {"id": "TKT-0005", "tenant": "initech", "title": "Duplicate rows in usage report", "priority": "medium", "status": "resolved", "category": "data"},
+  {"id": "TKT-0006", "tenant": "initech", "title": "Password reset email never arrives", "priority": "high", "status": "open", "category": "auth"},
+  {"id": "TKT-0007", "tenant": "acme-corp", "title": "asap", "priority": "asap", "status": "open"},
+  {"id": "TKT-0008", "tenant": "globex", "title": "hi", "priority": "low", "status": "open"},
+  {"id": "TKT-0009", "tenant": "initech", "title": "Billing page throws a 500 on save", "status": "open", "category": "billing"}
+]
