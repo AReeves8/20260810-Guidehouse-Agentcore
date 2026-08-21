@@ -1,3 +1,7 @@
+""" Standalone file just to create fake records and put them in the DB. 
+Make sure VS Code terminal has your ENV file or var for DATABASE_URL. """
+
+
 import random
 
 from faker import Faker
