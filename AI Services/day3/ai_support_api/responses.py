@@ -1,6 +1,5 @@
 """ Envelopes to wrap around our normal responses and convert Tickets into JSON """
 
-from ticket_api.tickets.models import Ticket
 from flask import jsonify
 
 
@@ -18,13 +17,11 @@ class ApiError(Exception):
         self.detail = detail
 
 
-def list_envelope(tickets: list[Ticket]):
-    # creates a JSON object with two properties: a count of the number of items and list of the actual items
-    # could instead just do jsonify([t.model_dump(mode="json") for t in tickets]) if you only want a list returned
-    return jsonify(count=len(tickets), items=[t.model_dump(mode="json") for t in tickets])
+def list_envelope(items: list):
+    return jsonify(count=len(items), **{"items": items})
 
-def single_envelope(ticket: Ticket):
-    return jsonify(ticket.model_dump(mode="json"))
+def single_envelope(payload: dict):
+    return jsonify(**payload)
 
 
 def error_response(code: str, status: int, detail: str | None = None):
