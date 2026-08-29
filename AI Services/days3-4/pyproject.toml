@@ -1,5 +1,5 @@
 [project]
-name = "ai_support-api"
+name = "ai_support_api"
 version = "0.1.0"
 description = "Flask API over AWS managed AI services -- Comprehend and Translate, called via boto3."
 requires-python = ">=3.11"
@@ -10,9 +10,15 @@ dependencies = [
     "python-dotenv>=1.0",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pillow>=10.0"
+]
+
+
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-include = ["ai_support-api*"]
+include = ["ai_support_api*"]

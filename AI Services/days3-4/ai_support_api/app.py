@@ -5,6 +5,8 @@ from ai_support_api.responses import ApiError, error_response
 from ai_support_api.health.routes import health_bp
 from ai_support_api.translate.routes import translation_bp
 from ai_support_api.analysis.routes import analysis_bp
+from ai_support_api.documents.routes import documents_bp
+from ai_support_api.speech.routes import speech_bp
 
 
 # Common AWS Errors and their codes
@@ -32,6 +34,8 @@ def create_app():
     app.register_blueprint(health_bp, url_prefix="/health")
     app.register_blueprint(translation_bp, url_prefix="/api/v1/translation")
     app.register_blueprint(analysis_bp, url_prefix="/api/v1/analysis")
+    app.register_blueprint(documents_bp, url_prefix="/api/v1/documents")
+    app.register_blueprint(speech_bp, url_prefix="/api/v1/speech")
 
     """
         Global Exception Handling
@@ -70,7 +74,7 @@ def create_app():
     def handle_aws_client_error(error):
 
         # only extracting the code from aws so we don't reveal too much info to client
-        aws_code = error.get("Error", {}).get("Code", "UnknownAwsError")
+        aws_code = error.response.get("Error", {}).get("Code", "UnknownAwsError")
         status = _CLIENT_FAULT_STATUS.get(aws_code, 502)    # default to 502 - Bad Gateway error
         app.logger.exception("AWS call failed: %s", aws_code)
         return error_response("aws_error", status, aws_code)
