@@ -12,3 +12,13 @@ def get_session() -> boto3.Session:
 def get_client(service_name: str):
     return get_session().client(service_name)
 
+
+# retrieve client for bedrock runtime (aka Data Plane)
+def bedrock_runtime():
+    """ inferencing occurs """
+    return get_client("bedrock-runtime")
+
+# retrieve client for bedrock (aka Control Plane)
+def bedrock_control():
+    """ control plane contains config for your models, no actual inferencing """
+    return get_client("bedrock")
