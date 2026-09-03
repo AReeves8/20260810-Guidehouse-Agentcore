@@ -7,7 +7,8 @@
             - messages:         list of dict. conversation lives
             - inferenceConfig:  max tokens, temperature, Top P, Top K, etc.
             - modelId:          id of bedrock model to use
-            - toolConfig:       list of dict. information on tools for the model to use.
+            - toolConfig:       dict. information on tools for the model to use.
+            - guardrailConfig:  dict. info about what guardrail to wrap around the model call.
 """
 
 from ticket_assistant.config import MODEL_ID
@@ -18,7 +19,8 @@ def converse(
         system: str | None = None, 
         max_tokens: int = 1024, 
         temperature: float = 0.2,           # more deterministic responses for ticket priority classification
-        tool_config: dict | None = None
+        tool_config: dict | None = None,
+        guardrail_config: dict | None = None,
 ) -> dict:
     """ Make a converse callout and return the entire response for further inspection """
 
@@ -33,6 +35,8 @@ def converse(
         request["system"] = [{"text": system}]
     if tool_config:
         request["toolConfig"] = tool_config
+    if guardrail_config:
+        request["guardrailConfig"] = guardrail_config
 
     # calling the Converse API and returning the response
     return bedrock_runtime().converse(**request)
