@@ -22,3 +22,8 @@ def bedrock_runtime():
 def bedrock_control():
     """ control plane contains config for your models, no actual inferencing """
     return get_client("bedrock")
+
+# retrieve bedrock agent
+def agent_runtime():
+    """ handle knowledge bases as well as agent queries """
+    return get_client("bedrock-agent-runtime")
