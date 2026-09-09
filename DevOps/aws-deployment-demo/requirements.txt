@@ -1,0 +1,22 @@
+# Elastic Beanstalk's Python platform installs from THIS file, not from
+# pyproject.toml. That is the platform's contract: put a requirements.txt at
+# the root of the source bundle and the platform builds a virtualenv from it
+# before starting your process.
+#
+# WHY THIS IS DUPLICATED, AND WHY THAT IS WORTH NOTICING:
+# pyproject.toml is what `pip install .` and the Dockerfile use. This file is
+# what Beanstalk uses. 
+#
+# A real project does not maintain both by hand -- it GENERATES this file from
+# pyproject.toml, so there is still one source of truth:
+#
+#     pip install pip-tools && pip-compile pyproject.toml -o requirements.txt
+#     # or, faster:  uv pip compile pyproject.toml -o requirements.txt
+
+flask>=3.0
+flask-sqlalchemy>=3.1
+flask-migrate>=4.0
+psycopg[binary]>=3.1
+pydantic>=2.7
+python-dotenv>=1.0
+gunicorn>=22.0

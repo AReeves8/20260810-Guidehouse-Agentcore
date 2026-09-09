@@ -1,0 +1,35 @@
+# Local development only. Nothing in AWS reads this file.
+#
+# It exists so the app can be run and migrated against a real Postgres before
+# any cloud resource is created -- debugging a broken app and a broken
+# deployment at the same time is how a live demo goes wrong.
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: devpassword
+      POSTGRES_DB: fieldnotes
+    ports:
+      - "5432:5432"
+    healthcheck:
+      # The API waits for this to pass. Postgres accepts connections a beat
+      # after the container reports "running", so without a health check the
+      # API starts first, fails its first query, and exits.
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 10
+
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      # Hostname is the SERVICE NAME, not localhost. Each container has its
+      # own network namespace, so "localhost" inside the API container means
+      # the API container. Compose resolves "db" for us.
+      DATABASE_URL: postgresql+psycopg://postgres:devpassword@db:5432/fieldnotes
+      DEPLOY_TARGET: local-compose
+    depends_on:
+      db:
+        condition: service_healthy
