@@ -1,6 +1,1 @@
-# Elastic Beanstalk reads this file to learn how to START your application.
-#
-# `web:` is a required name, not a label of our choosing. The platform looks
-# for a process called exactly `web` and puts nginx in front of that one.
-
 web: gunicorn --bind :8000 --workers 2 --access-logfile - fieldnotes.app:app
