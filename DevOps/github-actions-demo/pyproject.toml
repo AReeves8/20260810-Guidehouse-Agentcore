@@ -1,0 +1,21 @@
+[project]
+name = "fieldnotes"
+version = "0.1.0"
+description = "A deliberately small Flask API, used to practise deploying to AWS three different ways."
+requires-python = ">=3.11"
+dependencies = [
+    "flask>=3.0",
+    "flask-sqlalchemy>=3.1",
+    "flask-migrate>=4.0",
+    "psycopg[binary]>=3.1",
+    "pydantic>=2.7",
+    "python-dotenv>=1.0",
+    "gunicorn>=22.0",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["fieldnotes*"]

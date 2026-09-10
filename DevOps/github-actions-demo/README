@@ -1,0 +1,1 @@
+Example Application that uses GitHub Actions to automatically deploy to ECR and ECS. 

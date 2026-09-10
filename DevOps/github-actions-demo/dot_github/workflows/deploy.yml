@@ -1,0 +1,97 @@
+name: Deploy to ECS
+
+# name the event you want this to run on
+on: 
+  push:
+    branches: [main]
+
+  # allows manual start of action
+  workflow_dispatch: 
+
+# vars to work with in this file
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: ar-aws-deploy-demo
+  ECS_CLUSTER: ar-ecs-demo
+  ECS_SERVICE: ar-ecs-demo-task-def-service-1
+  CONTAINER_NAME: Main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    # allows GitHub to retrieve credentials without storing them anywhere
+    permissions: 
+      id-token: write    # not needed if you're doing Access Key auth instead of OIDC
+      contents: read
+      
+    steps:
+      - name: Check out GitHub repository
+        uses: actions/checkout@v6.1.0
+
+        # where GitHub works with OIDC to grab auth token
+      - name: Assume role with OIDC
+        uses: aws-actions/configure-aws-credentials@v6.2.4
+        with: 
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      # - name: Authenticate to AWS with stored Access Keys
+      #   uses: aws-actions/configure-aws-credentials@v6.2.4
+      #   with:
+      #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #       aws-region: ${{ env.AWS_REGION }}
+
+      - name: Log in to ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and Push Image
+        id: image
+        env:
+          REGISTRY: ${{ steps.ecr.outputs.registry }}
+          TAG: ${{ github.sha }}
+        run: |
+          docker build -t $REGISTRY/$ECR_REPOSITORY:$TAG .
+          docker push $REGISTRY/$ECR_REPOSITORY:$TAG
+          echo "uri=$REGISTRY/$ECR_REPOSITORY:$TAG" >> $GITHUB_OUTPUT
+
+      - name: Put the image in the Task Definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition-arn: ${{ vars.AWS_TASK_DEF_ARN }}
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.image.outputs.uri }}
+
+      - name: Deploy to ECS and wait for it to be healthy
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with: 
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
+
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
+    
