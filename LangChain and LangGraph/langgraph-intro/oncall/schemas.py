@@ -117,3 +117,49 @@ class Diagnosis(BaseModel):
             "person's sign-off before it may be carried out."
         ),
     )
+
+class RemediationPlan(BaseModel):
+    """ What to actually do about the incident, decided from the runbooks. 
+    
+        Choose exactly one action and name the resource it applies to. 
+        Base the choice only on the runbook excerpts you were given. 
+        Summarize in one sentence your choice and the runbook that gave the directions.
+    """
+
+    action: Literal[
+        "rollback_deployment",
+        "restart_service",
+        "scale_workers",
+        "acknowledge_only",
+        "escalate_to_human"
+    ] = Field(
+        description=(
+            "The single next action. Use acknowledge_only when the runbooks say no action is needed. "
+            "Use escalate_to_human when the runbooks do not cover the situation or the action that is needed "
+            "is not in the list of possible actions to take."
+        )
+    )
+
+    target: str = Field(
+        description="The service or resource that the action aplies to."
+    )
+
+    argument: str | None = Field(
+        default=None,
+        description=(
+            "One extra argument that an action may need to do its job. Examples include a deployment id, a rollback version, "
+            "or a worker count. Null if the action doesn't need any extra parameters."
+        )
+    )
+
+    rationale: str = Field(
+        description="One sentence explanation for why this action was chosen. Cite the runbook rule behind it."
+    )
+
+    requires_approval: bool = Field(
+        description="True if the runbook excerpt states this action needs a second person's sign off. Default to True if you're unsure."
+    )
+
+    @property
+    def is_destructive(self) -> bool:
+        return self.action not in ("acknowledge_only", "escalate_to_human")

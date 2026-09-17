@@ -11,24 +11,7 @@ from .chains import build_triage_chain
 from .llm import get_chat_model
 from .retriever import get_retriever, load_runbook_chunks
 from .schemas import Triage, Diagnosis
-
-
-
-DIAGNOSIS_SYSTEM = """You are an on-call assistant answering from your
-company's own runbooks.
-
-The runbook excerpts below are the ONLY source you may use. They are this
-company's operational policy and they override anything you believe about how
-software systems normally behave.
-
-- If the excerpts answer the question, answer from them and cite the filenames.
-- If the excerpts do NOT cover the situation, set grounded to false and say
-  what is missing. Do not fill the gap from general knowledge.
-- A plausible answer that is not in the excerpts is worse than no answer,
-  because someone will act on it.
-
-Runbook excerpts:
-{context}"""
+from .prompts import DIAGNOSIS_PROMPT
 
 
 def format_query(triage: Triage) -> str:
@@ -52,7 +35,7 @@ def format_docs(docs: list[Document]) -> str:
     result = "\n\n".join(blocks)
     return result
 
-def enforce_gounding(diagnosis: Diagnosis) -> Diagnosis:
+def enforce_grounding(diagnosis: Diagnosis) -> Diagnosis:
     """ Make sure the model actually grounded itself in the content, rather than just saying it did """
 
     known = {chunk.metadata["source"] for chunk in load_runbook_chunks()}
@@ -77,7 +60,7 @@ def build_rag_chain(k: int = 4) -> Runnable:
     retriever = get_retriever(k=k)
 
     prompt = ChatPromptTemplate.from_messages([
-        ("system", DIAGNOSIS_SYSTEM),
+        ("system", DIAGNOSIS_PROMPT),
         ("human", "{question}")
     ])
 
@@ -89,7 +72,7 @@ def build_rag_chain(k: int = 4) -> Runnable:
     return (RunnableParallel(
         question=itemgetter("question"),
         context=itemgetter("question") | retriever | RunnableLambda(format_docs)
-    ) | prompt | structured_model | RunnableLambda(enforce_gounding))
+    ) | prompt | structured_model | RunnableLambda(enforce_grounding))
 
 
 def build_diagnosis_chain() -> Runnable:
