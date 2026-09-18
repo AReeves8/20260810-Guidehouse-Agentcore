@@ -26,13 +26,18 @@ def print_steps(app, graph_state, config: RunnableConfig):
 if __name__ == "__main__":
 
     app = build_graph_with_memory()
-    alert = ALERTS[0]
+
+    alert_index = 0
+    alert = ALERTS[alert_index]
 
     # creating a thread id for our graph state 
     thread_id = uuid.uuid4()
     config: RunnableConfig = {
         "configurable": {
-            "thread_id": thread_id
+            "thread_id": thread_id,
+
+            # naming the run to appear in LangSmith
+            "run_name": f"[{thread_id}] - Alert {alert_index + 1}"     
         }
     }
 
@@ -42,7 +47,8 @@ if __name__ == "__main__":
         "evidence": [],
         "trace": [],
         "retrieval_attempts": 0,
-        "tool_attempts": 0
+        "tool_attempts": 0,
+        "delegation_attempts": 0
     }
 
     status: str = "new"

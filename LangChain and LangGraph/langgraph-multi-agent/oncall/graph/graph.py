@@ -3,16 +3,17 @@ from langgraph.graph import START, END, StateGraph
 from langgraph.checkpoint.serde.jsonplus import JsonPlusSerializer
 from langgraph.checkpoint.memory import InMemorySaver
 
-from oncall.schemas import Triage, Diagnosis, RemediationPlan, StatusUpdate
+from oncall.schemas import Triage, Diagnosis, RemediationPlan, StatusUpdate, Delegation
 from oncall.graph.state import IncidentState
-from oncall.graph.nodes.investigation import triage_node, investigate_node, tools_node, route_after_investigation
+from oncall.graph.nodes.investigation import triage_node
 from oncall.graph.nodes.diagnosis import diagnose_node, reframe_node, retrieve_node, route_after_diagnose
 from oncall.graph.nodes.remediation import human_approval_node, plan_remediation_node, route_after_approval, route_after_plan
 from oncall.graph.nodes.resolution import close_node, escalate_node, execute_node, write_status_node
+from oncall.graph.nodes.supervision import supervisor_node, health_specialist_node, change_specialist_node, route_after_supervisor
 
 
 # using the serializer to convert pydantic models to and from JSON
-SERDE = JsonPlusSerializer(allowed_msgpack_modules=[Triage, Diagnosis, RemediationPlan, StatusUpdate])
+SERDE = JsonPlusSerializer(allowed_msgpack_modules=[Triage, Diagnosis, RemediationPlan, StatusUpdate, Delegation])
 
 # checkpointer will write graph state into memory
 #   InMemorySaver - saves state into app memory
@@ -26,8 +27,11 @@ def build_graph(checkpointer=None):
 
     # --- NODES ---
     graph.add_node("triage", triage_node)
-    graph.add_node("investigate", investigate_node)
-    graph.add_node("tools", tools_node)
+
+    # investigation is now handled by the agents, so no more investigation and tool nodes or edges
+    graph.add_node("supervisor", supervisor_node)
+    graph.add_node("health_specialist", health_specialist_node)
+    graph.add_node("change_specialist", change_specialist_node)
 
     graph.add_node("retrieve", retrieve_node)
     graph.add_node("diagnose", diagnose_node)
@@ -44,15 +48,21 @@ def build_graph(checkpointer=None):
 
     # --- EDGES ---
     graph.add_edge(START, "triage")
-    graph.add_edge("triage", "investigate")
+    graph.add_edge("triage", "supervisor")
 
+    # SUPERVISOR AND WORKER EDGES
     graph.add_conditional_edges(
-        "investigate", 
-        route_after_investigation,
-        {"tools": "tools", "retrieve": "retrieve"}
+        "supervisor",
+        route_after_supervisor,
+        {
+            "health_specialist": "health_specialist",
+            "change_specialist": "change_specialist",
+            "retrieve": "retrieve",
+        },
     )
+    graph.add_edge("health_specialist", "supervisor")
+    graph.add_edge("change_specialist", "supervisor")
 
-    graph.add_edge("tools", "investigate")
     graph.add_edge("retrieve", "diagnose")
 
     graph.add_conditional_edges(
