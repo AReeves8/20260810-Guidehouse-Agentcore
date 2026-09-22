@@ -1,0 +1,17 @@
+{
+  "targets": {
+    "default": {
+      "resources": {
+        "runtimes": {
+          "ExpenseAgent": {
+            "runtimeId": "ExpenseDemo_ExpenseAgent-WhRONL55Od",
+            "runtimeArn": "arn:aws:bedrock-agentcore:us-east-1:397345411365:runtime/ExpenseDemo_ExpenseAgent-WhRONL55Od",
+            "roleArn": "arn:aws:iam::397345411365:role/AgentCore-ExpenseDemo-def-ApplicationAgentExpenseAg-NiGjZ7Ip2bvo"
+          }
+        },
+        "stackName": "AgentCore-ExpenseDemo-default",
+        "deployHash": "3ee65e4f8edef93d"
+      }
+    }
+  }
+}
