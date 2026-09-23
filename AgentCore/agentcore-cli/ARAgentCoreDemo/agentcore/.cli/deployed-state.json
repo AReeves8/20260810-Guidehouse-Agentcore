@@ -1,0 +1,17 @@
+{
+  "targets": {
+    "default": {
+      "resources": {
+        "runtimes": {
+          "ARExpenseAgent": {
+            "runtimeId": "ARAgentCoreDemo_ARExpenseAgent-oCeDwJCxTr",
+            "runtimeArn": "arn:aws:bedrock-agentcore:us-east-1:397345411365:runtime/ARAgentCoreDemo_ARExpenseAgent-oCeDwJCxTr",
+            "roleArn": "arn:aws:iam::397345411365:role/AgentCore-ARAgentCoreDemo-ApplicationAgentARExpense-yJ6yuagK994j"
+          }
+        },
+        "stackName": "AgentCore-ARAgentCoreDemo-default",
+        "deployHash": "d30f49d8a6bb039e"
+      }
+    }
+  }
+}
