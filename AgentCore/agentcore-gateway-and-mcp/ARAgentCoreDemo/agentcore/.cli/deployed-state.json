@@ -1,0 +1,31 @@
+{
+  "targets": {
+    "default": {
+      "resources": {
+        "runtimes": {
+          "ARExpenseAgent": {
+            "runtimeId": "ARAgentCoreDemo_ARExpenseAgent-5STVmG79DN",
+            "runtimeArn": "arn:aws:bedrock-agentcore:us-east-1:397345411365:runtime/ARAgentCoreDemo_ARExpenseAgent-5STVmG79DN",
+            "roleArn": "arn:aws:iam::397345411365:role/AgentCore-ARAgentCoreDemo-ApplicationAgentARExpense-MmrQ2UpcU2pa"
+          }
+        },
+        "mcp": {
+          "gateways": {
+            "arToolGW": {
+              "gatewayId": "aragentcoredemo-artoolgw-bmolwmevyt",
+              "gatewayArn": "arn:aws:bedrock-agentcore:us-east-1:397345411365:gateway/aragentcoredemo-artoolgw-bmolwmevyt",
+              "gatewayUrl": "https://aragentcoredemo-artoolgw-bmolwmevyt.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+              "targets": {
+                "websearch": {
+                  "targetId": "WWLOIYNHXP"
+                }
+              }
+            }
+          }
+        },
+        "stackName": "AgentCore-ARAgentCoreDemo-default",
+        "deployHash": "21be89470530d445"
+      }
+    }
+  }
+}
