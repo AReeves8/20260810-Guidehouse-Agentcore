@@ -1,0 +1,155 @@
+{
+  "$schema": "https://schema.agentcore.aws.dev/v1/agentcore.json",
+  "name": "ARAgentCoreDemo",
+  "version": 1,
+  "managedBy": "CDK",
+  "tags": {
+    "agentcore:created-by": "agentcore-cli",
+    "agentcore:project-name": "ARAgentCoreDemo"
+  },
+  "runtimes": [
+    {
+      "name": "ARExpenseAgent",
+      "build": "CodeZip",
+      "entrypoint": "main.py",
+      "codeLocation": "app/ARExpenseAgent/",
+      "runtimeVersion": "PYTHON_3_14",
+      "envVars": [
+        {
+          "name": "AWS_REGION",
+          "value": "us-east-1"
+        },
+        {
+          "name": "BEDROCK_MODEL_ID",
+          "value": "deepseek.v3.2"
+        },
+        {
+          "name": "BEDROCK_MAX_TOKENS",
+          "value": "600"
+        },
+        {
+          "name": "MCP_POLICY_AGENT_ARN",
+          "value": "arn:aws:bedrock-agentcore:us-east-1:397345411365:runtime/ARAgentCoreDemo_ARPolicyAgentMCP-svqxNc7BaD"
+        }
+      ],
+      "networkMode": "PUBLIC",
+      "protocol": "HTTP"
+    },
+    {
+      "name": "ARPolicyAgentMCP",
+      "build": "CodeZip",
+      "entrypoint": "main.py",
+      "codeLocation": "app/ARPolicyAgentMCP/",
+      "runtimeVersion": "PYTHON_3_14",
+      "networkMode": "PUBLIC",
+      "instrumentation": {
+        "enableOtel": false
+      },
+      "protocol": "MCP"
+    },
+    {
+      "name": "ARPolicyAgentA2A",
+      "build": "CodeZip",
+      "entrypoint": "main.py",
+      "codeLocation": "app/ARPolicyAgentA2A/",
+      "runtimeVersion": "PYTHON_3_14",
+      "networkMode": "PUBLIC",
+      "protocol": "A2A"
+    }
+  ],
+  "memories": [
+    {
+      "name": "arExpenseDemoMemory",
+      "eventExpiryDuration": 30,
+      "strategies": [
+        {
+          "type": "SEMANTIC",
+          "namespaceTemplates": [
+            "/users/{actorId}/facts"
+          ]
+        },
+        {
+          "type": "SUMMARIZATION",
+          "namespaceTemplates": [
+            "/summaries/{actorId}/{sessionId}"
+          ]
+        },
+        {
+          "type": "USER_PREFERENCE",
+          "namespaceTemplates": [
+            "/users/{actorId}/preferences"
+          ]
+        },
+        {
+          "type": "EPISODIC",
+          "namespaceTemplates": [
+            "/episodes/{actorId}/{sessionId}"
+          ],
+          "reflectionNamespaceTemplates": [
+            "/episodes/{actorId}"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ARPolicyAgentMCPMemory",
+      "eventExpiryDuration": 30,
+      "strategies": []
+    }
+  ],
+  "knowledgeBases": [],
+  "credentials": [
+    {
+      "authorizerType": "ApiKeyCredentialProvider",
+      "name": "ARAgentCoreDemoundefined"
+    }
+  ],
+  "evaluators": [],
+  "onlineEvalConfigs": [],
+  "agentCoreGateways": [
+    {
+      "name": "arToolGW",
+      "protocolType": "MCP",
+      "description": "Shared agent tools",
+      "targets": [
+        {
+          "name": "websearch",
+          "targetType": "connector",
+          "connectorId": "web-search",
+          "configurations": [
+            {
+              "name": "WebSearch",
+              "description": "",
+              "parameterValues": {},
+              "parameterOverrides": []
+            }
+          ]
+        },
+        {
+          "name": "policyMCP",
+          "targetType": "mcpServer",
+          "toolDefinitions": [
+            {
+              "name": "policyMCP",
+              "description": "Tool for policyMCP",
+              "inputSchema": {
+                "type": "object"
+              }
+            }
+          ],
+          "endpoint": "https://bedrock-agentcore.us-east-1.amazonaws.com/runtimes/arn%3Aaws%3Abedrock-agentcore%3Aus-east-1%3A397345411365%3Aruntime%2FARAgentCoreDemo_ARPolicyAgentMCP-svqxNc7BaD/invocations"
+        }
+      ],
+      "authorizerType": "AWS_IAM",
+      "enableSemanticSearch": true,
+      "exceptionLevel": "NONE"
+    }
+  ],
+  "policyEngines": [],
+  "configBundles": [],
+  "abTests": [],
+  "harnesses": [],
+  "datasets": [],
+  "capacityProviders": [],
+  "payments": []
+}

@@ -1,0 +1,51 @@
+{
+  "targets": {
+    "default": {
+      "resources": {
+        "runtimes": {
+          "ARPolicyAgentMCP": {
+            "runtimeId": "ARAgentCoreDemo_ARPolicyAgentMCP-svqxNc7BaD",
+            "runtimeArn": "arn:aws:bedrock-agentcore:us-east-1:397345411365:runtime/ARAgentCoreDemo_ARPolicyAgentMCP-svqxNc7BaD",
+            "roleArn": "arn:aws:iam::397345411365:role/AgentCore-ARAgentCoreDemo-ApplicationAgentARPolicyA-zjrAHMxQKlO5"
+          },
+          "ARExpenseAgent": {
+            "runtimeId": "ARAgentCoreDemo_ARExpenseAgent-5STVmG79DN",
+            "runtimeArn": "arn:aws:bedrock-agentcore:us-east-1:397345411365:runtime/ARAgentCoreDemo_ARExpenseAgent-5STVmG79DN",
+            "roleArn": "arn:aws:iam::397345411365:role/AgentCore-ARAgentCoreDemo-ApplicationAgentARExpense-MmrQ2UpcU2pa"
+          },
+          "ARPolicyAgentA2A": {
+            "runtimeId": "ARAgentCoreDemo_ARPolicyAgentA2A-tyevQn6Khb",
+            "runtimeArn": "arn:aws:bedrock-agentcore:us-east-1:397345411365:runtime/ARAgentCoreDemo_ARPolicyAgentA2A-tyevQn6Khb",
+            "roleArn": "arn:aws:iam::397345411365:role/AgentCore-ARAgentCoreDemo-ApplicationAgentARPolicyA-IEUlkEtoaqYN"
+          }
+        },
+        "memories": {
+          "arExpenseDemoMemory": {
+            "memoryId": "ARAgentCoreDemo_arExpenseDemoMemory-DBdhoJ2nzj",
+            "memoryArn": "arn:aws:bedrock-agentcore:us-east-1:397345411365:memory/ARAgentCoreDemo_arExpenseDemoMemory-DBdhoJ2nzj"
+          },
+          "ARPolicyAgentMCPMemory": {
+            "memoryId": "ARAgentCoreDemo_ARPolicyAgentMCPMemory-mS1Ene5VkM",
+            "memoryArn": "arn:aws:bedrock-agentcore:us-east-1:397345411365:memory/ARAgentCoreDemo_ARPolicyAgentMCPMemory-mS1Ene5VkM"
+          }
+        },
+        "mcp": {
+          "gateways": {
+            "arToolGW": {
+              "gatewayId": "aragentcoredemo-artoolgw-bmolwmevyt",
+              "gatewayArn": "arn:aws:bedrock-agentcore:us-east-1:397345411365:gateway/aragentcoredemo-artoolgw-bmolwmevyt",
+              "gatewayUrl": "https://aragentcoredemo-artoolgw-bmolwmevyt.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+              "targets": {
+                "websearch": {
+                  "targetId": "WWLOIYNHXP"
+                }
+              }
+            }
+          }
+        },
+        "stackName": "AgentCore-ARAgentCoreDemo-default",
+        "deployHash": "9b6fc0c4228b730f"
+      }
+    }
+  }
+}
