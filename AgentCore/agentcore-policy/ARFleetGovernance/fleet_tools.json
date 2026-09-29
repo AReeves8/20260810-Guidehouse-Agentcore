@@ -1,0 +1,97 @@
+[
+  {
+    "name": "get_service_status",
+    "description": "Return the current health, replica count and region of a service in the fleet.",
+    "inputSchema": {
+      "type": "object",
+      "description": "Which service to inspect, and in which environment.",
+      "properties": {
+        "service": {
+          "type": "string",
+          "description": "Service name, one of: checkout, search, billing."
+        },
+        "environment": {
+          "type": "string",
+          "description": "Environment name: dev, staging or prod."
+        }
+      },
+      "required": ["service", "environment"]
+    }
+  },
+  {
+    "name": "read_metrics",
+    "description": "Return recent request-rate and error-rate metrics for a service.",
+    "inputSchema": {
+      "type": "object",
+      "description": "Which service to read metrics for, and over what window.",
+      "properties": {
+        "service": {
+          "type": "string",
+          "description": "Service name, one of: checkout, search, billing."
+        },
+        "environment": {
+          "type": "string",
+          "description": "Environment name: dev, staging or prod."
+        }
+      },
+      "required": ["service", "environment"]
+    }
+  },
+  {
+    "name": "restart_service",
+    "description": "Restart every replica of a service. Causes a brief interruption while replicas cycle.",
+    "inputSchema": {
+      "type": "object",
+      "description": "Which service to restart, and in which environment.",
+      "properties": {
+        "service": {
+          "type": "string",
+          "description": "Service name, one of: checkout, search, billing."
+        },
+        "environment": {
+          "type": "string",
+          "description": "Environment name: dev, staging or prod."
+        }
+      },
+      "required": ["service", "environment"]
+    }
+  },
+  {
+    "name": "scale_service",
+    "description": "Change the replica count of a service.",
+    "inputSchema": {
+      "type": "object",
+      "description": "Scaling request.",
+      "properties": {
+        "service": {
+          "type": "string",
+          "description": "Service name, one of: checkout, search, billing."
+        },
+        "environment": {
+          "type": "string",
+          "description": "Environment name: dev, staging or prod."
+        },
+        "replicas": {
+          "type": "integer",
+          "description": "Desired replica count."
+        }
+      },
+      "required": ["service", "environment", "replicas"]
+    }
+  },
+  {
+    "name": "delete_snapshot",
+    "description": "Permanently delete a stored database snapshot. This cannot be undone.",
+    "inputSchema": {
+      "type": "object",
+      "description": "Which snapshot to delete.",
+      "properties": {
+        "snapshotId": {
+          "type": "string",
+          "description": "Snapshot identifier, e.g. snap-20260901-billing."
+        }
+      },
+      "required": ["snapshotId"]
+    }
+  }
+]

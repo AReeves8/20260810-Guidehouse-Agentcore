@@ -1,0 +1,64 @@
+{
+  "targets": {
+    "default": {
+      "resources": {
+        "runtimes": {
+          "ARFleetAgent": {
+            "runtimeId": "ARFleetGovernance_ARFleetAgent-SpG4Bw6hCS",
+            "runtimeArn": "arn:aws:bedrock-agentcore:us-east-1:397345411365:runtime/ARFleetGovernance_ARFleetAgent-SpG4Bw6hCS",
+            "roleArn": "arn:aws:iam::397345411365:role/AgentCore-ARFleetGovernan-ApplicationAgentARFleetAg-aT3IN7vEFYZR"
+          }
+        },
+        "mcp": {
+          "gateways": {
+            "ARFleetGateway": {
+              "gatewayId": "arfleetgovernance-arfleetgateway-nri1sfljea",
+              "gatewayArn": "arn:aws:bedrock-agentcore:us-east-1:397345411365:gateway/arfleetgovernance-arfleetgateway-nri1sfljea",
+              "gatewayUrl": "https://arfleetgovernance-arfleetgateway-nri1sfljea.gateway.bedrock-agentcore.us-east-1.amazonaws.com/mcp",
+              "targets": {
+                "ARFleetTools": {
+                  "targetId": "ARUWONQCGS"
+                }
+              }
+            }
+          }
+        },
+        "policyEngines": {
+          "ARFleetPolicyEngine": {
+            "policyEngineId": "ARFleetGovernance_ARFleetPolicyEngine-rf7u7bsjn9",
+            "policyEngineArn": "arn:aws:bedrock-agentcore:us-east-1:397345411365:policy-engine/ARFleetGovernance_ARFleetPolicyEngine-rf7u7bsjn9"
+          }
+        },
+        "policies": {
+          "ARFleetPolicyEngine/ArReadsAreFine": {
+            "policyId": "ArReadsAreFine-twh__4bgv_",
+            "policyArn": "arn:aws:bedrock-agentcore:us-east-1:397345411365:policy-engine/ARFleetGovernance_ARFleetPolicyEngine-rf7u7bsjn9/policy/ArReadsAreFine-twh__4bgv_",
+            "engineName": "ARFleetPolicyEngine"
+          },
+          "ARFleetPolicyEngine/ArRestartOutsideProd": {
+            "policyId": "ArRestartOutsideProd-c1ugc4pnae",
+            "policyArn": "arn:aws:bedrock-agentcore:us-east-1:397345411365:policy-engine/ARFleetGovernance_ARFleetPolicyEngine-rf7u7bsjn9/policy/ArRestartOutsideProd-c1ugc4pnae",
+            "engineName": "ARFleetPolicyEngine"
+          },
+          "ARFleetPolicyEngine/ArScaleWithinACeiling": {
+            "policyId": "ArScaleWithinACeiling-5q1_kfp_ri",
+            "policyArn": "arn:aws:bedrock-agentcore:us-east-1:397345411365:policy-engine/ARFleetGovernance_ARFleetPolicyEngine-rf7u7bsjn9/policy/ArScaleWithinACeiling-5q1_kfp_ri",
+            "engineName": "ARFleetPolicyEngine"
+          },
+          "ARFleetPolicyEngine/ArNeverDeleteSnapshots": {
+            "policyId": "ArNeverDeleteSnapshots-dyldyjzdsg",
+            "policyArn": "arn:aws:bedrock-agentcore:us-east-1:397345411365:policy-engine/ARFleetGovernance_ARFleetPolicyEngine-rf7u7bsjn9/policy/ArNeverDeleteSnapshots-dyldyjzdsg",
+            "engineName": "ARFleetPolicyEngine"
+          },
+          "ARFleetPolicyEngine/ArProdRestartIsOperatorOnly": {
+            "policyId": "ArProdRestartIsOperatorOnly-_gvyn5kd_d",
+            "policyArn": "arn:aws:bedrock-agentcore:us-east-1:397345411365:policy-engine/ARFleetGovernance_ARFleetPolicyEngine-rf7u7bsjn9/policy/ArProdRestartIsOperatorOnly-_gvyn5kd_d",
+            "engineName": "ARFleetPolicyEngine"
+          }
+        },
+        "stackName": "AgentCore-ARFleetGovernance-default",
+        "deployHash": "22e86086ed8334d7"
+      }
+    }
+  }
+}
