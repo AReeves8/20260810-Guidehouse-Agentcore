@@ -1,0 +1,140 @@
+{
+  "$schema": "https://schema.agentcore.aws.dev/v1/agentcore.json",
+  "name": "ARFleetGovernance",
+  "version": 1,
+  "managedBy": "CDK",
+  "tags": {
+    "agentcore:created-by": "agentcore-cli",
+    "agentcore:project-name": "ARFleetGovernance"
+  },
+  "runtimes": [
+    {
+      "name": "ARFleetAgent",
+      "build": "CodeZip",
+      "entrypoint": "main.py",
+      "codeLocation": "app/ARFleetAgent/",
+      "runtimeVersion": "PYTHON_3_14",
+      "envVars": [
+        {
+          "name": "AWS_REGION",
+          "value": "us-east-1"
+        },
+        {
+          "name": "BEDROCK_MODEL_ID",
+          "value": "deepseek.v3.2"
+        },
+        {
+          "name": "BEDROCK_MAX_TOKENS",
+          "value": "600"
+        },
+        {
+          "name": "MAX_GRAPH_STEPS",
+          "value": "12"
+        },
+        {
+          "name": "MAX_TOOL_CALLS",
+          "value": "8"
+        },
+        {
+          "name": "MAX_SESSION_TOKENS",
+          "value": "10000"
+        }
+      ],
+      "networkMode": "PUBLIC",
+      "protocol": "HTTP"
+    }
+  ],
+  "memories": [],
+  "knowledgeBases": [],
+  "credentials": [],
+  "evaluators": [],
+  "onlineEvalConfigs": [],
+  "agentCoreGateways": [
+    {
+      "name": "ARFleetGateway",
+      "protocolType": "MCP",
+      "description": "Gateway for ARFleetGateway",
+      "targets": [
+        {
+          "name": "ARFleetTools",
+          "targetType": "lambdaFunctionArn",
+          "lambdaFunctionArn": {
+            "lambdaArn": "arn:aws:lambda:us-east-1:397345411365:function:ArDemoFleetOpsTools",
+            "toolSchemaFile": "fleet_tools.json"
+          }
+        }
+      ],
+      "authorizerType": "AWS_IAM",
+      "enableSemanticSearch": false,
+      "exceptionLevel": "DEBUG",
+      "policyEngineConfiguration": {
+        "policyEngineName": "ARFleetPolicyEngine",
+        "mode": "ENFORCE"
+      }
+    }
+  ],
+  "policyEngines": [
+    {
+      "name": "ARFleetPolicyEngine",
+      "policies": [
+        {
+          "name": "ArReadsAreFine",
+          "statement": "// reading state of the fleet of services is not a problem, so allow all actions to it\r\n\r\npermit(\r\n    principal,\r\n\r\n    // having multiple actions in one policy uses the 'in' keyword with a list\r\n    action in [\r\n        AgentCore::Action::\"ARFleetTools___get_service_status\",\r\n        AgentCore::Action::\"ARFleetTools___read_metrics\",\r\n    ],\r\n    resource == AgentCore::Gateway::\"arn:aws:bedrock-agentcore:us-east-1:397345411365:gateway/arfleetgovernance-arfleetgateway-nri1sfljea\"\r\n);",
+          "sourceFile": "policies/01-reads-are-fine.cedar",
+          "validationMode": "FAIL_ON_ANY_FINDINGS",
+          "enforcementMode": "ACTIVE",
+          "authorizationPhase": "INITIATE"
+        },
+        {
+          "name": "ArRestartOutsideProd",
+          "statement": "// we will allow the restart action, but only when the environment is not prod\r\n\r\npermit(\r\n    principal, \r\n    action == AgentCore::Action::\"ARFleetTools___restart_service\",\r\n    resource == AgentCore::Gateway::\"arn:aws:bedrock-agentcore:us-east-1:397345411365:gateway/arfleetgovernance-arfleetgateway-nri1sfljea\"\r\n)\r\nwhen {\r\n\r\n    // context.input is looking at payload of request sent to the gateway\r\n    context.input has environment && context.input.environment != \"prod\"\r\n};",
+          "sourceFile": "policies/02-restart-outside-prod.cedar",
+          "validationMode": "FAIL_ON_ANY_FINDINGS",
+          "enforcementMode": "ACTIVE",
+          "authorizationPhase": "INITIATE"
+        },
+        {
+          "name": "ArScaleWithinACeiling",
+          "statement": "// allow scaling as long as the replica value isn't too high and we aren't in prod\r\n\r\npermit(\r\n    principal, \r\n    action == AgentCore::Action::\"ARFleetTools___scale_service\",\r\n    resource == AgentCore::Gateway::\"arn:aws:bedrock-agentcore:us-east-1:397345411365:gateway/arfleetgovernance-arfleetgateway-nri1sfljea\"\r\n)\r\nwhen {\r\n\r\n    // context.input is looking at payload of request sent to the gateway\r\n    context.input has environment && \r\n    context.input has replicas && \r\n    context.input.environment != \"prod\" &&\r\n    context.input.replicas <= 10\r\n};",
+          "sourceFile": "policies/03-scale-within-a-ceiling.cedar",
+          "validationMode": "FAIL_ON_ANY_FINDINGS",
+          "enforcementMode": "ACTIVE",
+          "authorizationPhase": "INITIATE"
+        },
+        {
+          "name": "ArNeverDeleteSnapshots",
+          "statement": "// never allow deleting of snapshots through the gateway\r\n\r\nforbid(\r\n    principal,\r\n    action == AgentCore::Action::\"ARFleetTools___delete_snapshot\",\r\n    resource == AgentCore::Gateway::\"arn:aws:bedrock-agentcore:us-east-1:397345411365:gateway/arfleetgovernance-arfleetgateway-nri1sfljea\"\r\n);",
+          "sourceFile": "policies/04-never-delete-snapshots.cedar",
+          "validationMode": "IGNORE_ALL_FINDINGS",
+          "enforcementMode": "ACTIVE",
+          "authorizationPhase": "INITIATE"
+        },
+        {
+          "name": "ArProdRestartIsOperatorOnly",
+          "statement": "// allow prod restarts when the user is a Fleet Operator in IAM\r\n\r\npermit(\r\n    principal is AgentCore::IamEntity, \r\n    action == AgentCore::Action::\"ARFleetTools___restart_service\",\r\n    resource == AgentCore::Gateway::\"arn:aws:bedrock-agentcore:us-east-1:397345411365:gateway/arfleetgovernance-arfleetgateway-nri1sfljea\"\r\n)\r\nwhen {\r\n    context.input has environment && \r\n    context.input.environment == \"prod\" &&\r\n    principal.id like \"arn:aws:sts::*:assumed-role/*FleetOperator\"\r\n};",
+          "sourceFile": "policies/05-prod-restart-is-operator-only.cedar",
+          "validationMode": "FAIL_ON_ANY_FINDINGS",
+          "enforcementMode": "ACTIVE",
+          "authorizationPhase": "INITIATE"
+        }
+      ]
+    }
+  ],
+  "configBundles": [],
+  "abTests": [],
+  "harnesses": [],
+  "datasets": [
+    {
+      "name": "ARFleetEvalSet",
+      "schemaType": "AGENTCORE_EVALUATION_PREDEFINED_V1",
+      "description": "Fleet-ops scenarios with grounded truth",
+      "config": {
+        "managed": {
+          "location": "datasets/ARFleetEvalSet.jsonl"
+        }
+      }
+    }
+  ],
+  "capacityProviders": [],
+  "payments": []
+}
